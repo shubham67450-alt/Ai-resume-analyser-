@@ -1,0 +1,183 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>AI Resume ATS Analyzer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0a0a0c;--c:#141417;--c2:#1b1b20;--b:#26262d;--t:#f5f3ee;--m:#8c8c96;--g:#d8b26a;--ok:#7ee0a6;--bad:#ff7a6b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--t);font:400 15px/1.6 Manrope,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background-image:radial-gradient(900px 400px at 50% -100px,#1e1b14,transparent)}
+.w{max-width:960px;margin:0 auto;padding:0 20px 80px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0;font-weight:800;letter-spacing:.02em}
+nav span{color:var(--m);font-weight:400;font-size:13px}
+h1{font-size:clamp(36px,8vw,68px);line-height:1.02;font-weight:800;letter-spacing:-.03em;margin:40px 0 14px}
+.lead{color:var(--m);max-width:520px;margin:0 0 36px}
+.card{background:var(--c);border-radius:24px;padding:24px;box-shadow:10px 10px 28px #050506,-6px -6px 18px #1a1a1f;margin-bottom:22px}
+.tabs{display:inline-flex;background:var(--bg);border-radius:999px;padding:4px;box-shadow:inset 3px 3px 8px #050506,inset -2px -2px 6px #1a1a1f;margin-bottom:18px}
+.tabs button{border:0;background:none;color:var(--m);padding:9px 20px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer;transition:.2s}
+.tabs button.on{background:var(--c2);color:var(--t);box-shadow:3px 3px 8px #050506,-2px -2px 6px #1f1f25}
+.drop{display:block;border:1.5px dashed #3a3a43;border-radius:20px;padding:44px 16px;text-align:center;cursor:pointer;transition:.2s;color:var(--m)}
+.drop:hover,.drop.ov{border-color:var(--g);color:var(--t);background:#18171a}.drop b{color:var(--t);display:block;font-size:17px;margin-bottom:4px}
+.drop input{display:none}
+textarea{width:100%;min-height:220px;background:var(--bg);color:var(--t);border:0;border-radius:18px;padding:16px;font:inherit;resize:vertical;box-shadow:inset 4px 4px 10px #050506,inset -2px -2px 8px #1a1a1f}
+.file{display:flex;align-items:center;gap:14px;margin-top:16px;background:var(--bg);padding:14px 16px;border-radius:16px;flex-wrap:wrap}
+.file .n{flex:1;min-width:140px;overflow-wrap:anywhere}.file small{color:var(--m);display:block}
+.st{font-size:13px;font-weight:600}.st.ok{color:var(--ok)}.st.er{color:var(--bad)}.st.ld{color:var(--g)}
+.btn{border:0;border-radius:999px;padding:14px 28px;font:inherit;font-weight:800;cursor:pointer;background:var(--t);color:#0a0a0c;transition:transform .15s,box-shadow .2s;box-shadow:0 8px 24px #0008}
+.btn:hover{transform:translateY(-1px)}.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.btn.s{background:var(--c2);color:var(--t);box-shadow:4px 4px 12px #050506,-3px -3px 10px #1f1f25;padding:10px 18px;font-weight:600}
+.btn:focus-visible,.tabs button:focus-visible,.drop:focus-within{outline:2px solid var(--g);outline-offset:3px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.mt{margin-top:18px}
+.err{background:#2a1513;color:#ffb3a8;border-radius:16px;padding:14px 18px;margin-bottom:18px}
+.note{color:var(--m);font-size:13px}
+.hero{display:grid;grid-template-columns:200px 1fr;gap:28px;align-items:center}
+.ring{position:relative;width:200px;height:200px}.ring svg{transform:rotate(-90deg)}.ring div{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring b{font-size:56px;line-height:1;font-weight:800;background:linear-gradient(180deg,#fff,var(--g));-webkit-background-clip:text;background-clip:text;color:transparent}
+.bar{margin:12px 0}.bar p{display:flex;justify-content:space-between;margin:0 0 5px;font-size:14px}.bar i{display:block;height:8px;background:var(--bg);border-radius:9px;overflow:hidden;box-shadow:inset 1px 1px 3px #000}
+.bar i u{display:block;height:100%;background:linear-gradient(90deg,#9c7a3c,var(--g));border-radius:9px;transition:width .8s}
+h2{font-size:20px;margin:0 0 14px;font-weight:800;letter-spacing:-.01em}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:22px}.g2>.card{margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{background:var(--c2);border-radius:999px;padding:5px 13px;font-size:13px}
+ul{margin:0;padding-left:18px}li{margin:6px 0}.pf{border-left:3px solid var(--g);padding:4px 0 4px 14px;margin:14px 0}.pf b{display:block}.pf span{color:var(--m);font-size:14px}
+.sum{background:var(--bg);border-radius:16px;padding:16px;border:1px solid var(--g)}
+.lbl{color:var(--g);font-size:12px;font-weight:600;margin:0 0 6px}
+@media(max-width:720px){.hero,.g2{grid-template-columns:1fr}.ring{margin:0 auto}.g2{gap:0}.g2>.card{margin-bottom:22px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><div class="w">
+<nav><div>ATS Analyzer</div><span>Resume only. No job description needed.</span></nav>
+<section id="up"><h1>Know how a machine reads your resume.</h1><p class="lead">Upload a PDF or DOCX, or paste the text. Get a transparent 100-point ATS score, what to fix first, and a cleaner summary.</p>
+<div class="card"><div class="tabs"><button id="t1" class="on">Upload file</button><button id="t2">Paste text</button></div><div id="err"></div>
+<div id="p1"><label class="drop" id="dz"><input type="file" id="fi" accept=".pdf,.docx"><b>Drop your resume here</b>PDF or DOCX, up to 5 MB, or click to browse</label>
+<div class="file" id="fl" hidden><div class="n"><span id="fn"></span><small id="fs"></small></div><span class="st" id="fst"></span><button class="btn s" id="rep">Replace</button><button class="btn s" id="rm">Remove</button></div></div>
+<div id="p2" hidden><textarea id="ta" placeholder="Paste your full resume text here"></textarea></div>
+<div class="row mt"><button class="btn" id="go" disabled>Analyze resume</button><span class="note" id="ld"></span></div>
+<p class="note mt" style="margin-bottom:0">Your resume is read and analyzed inside your browser. Nothing is uploaded, stored or sent to any AI service. The score is an estimate and cannot guarantee passing every employer's ATS.</p></div></section>
+<section id="res" hidden></section></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let mode=1,ext='',tables=0,R=null,busy=false;
+const showErr=m=>{$('#err').innerHTML=m?'<div class="err" role="alert">'+esc(m)+'</div>':''};
+function setMode(m){mode=m;$('#t1').classList.toggle('on',m==1);$('#t2').classList.toggle('on',m==2);$('#p1').hidden=m!=1;$('#p2').hidden=m!=2;showErr('');upd()}
+$('#t1').onclick=()=>setMode(1);$('#t2').onclick=()=>setMode(2);
+const upd=()=>{$('#go').disabled=busy||(mode==1?!ext.trim():$('#ta').value.trim().length<1)};
+$('#ta').oninput=upd;
+const stat=(c,t)=>{$('#fst').className='st '+c;$('#fst').textContent=t};
+function clearFile(){ext='';tables=0;$('#fi').value='';$('#fl').hidden=true;$('#dz').hidden=false;upd()}
+$('#rm').onclick=clearFile;$('#rep').onclick=()=>$('#fi').click();
+const dz=$('#dz');['dragover','dragenter'].forEach(e=>dz.addEventListener(e,x=>{x.preventDefault();dz.classList.add('ov')}));
+['dragleave','drop'].forEach(e=>dz.addEventListener(e,x=>{x.preventDefault();dz.classList.remove('ov')}));
+dz.addEventListener('drop',x=>{if(x.dataTransfer.files[0])pick(x.dataTransfer.files[0])});
+$('#fi').onchange=e=>{if(e.target.files[0])pick(e.target.files[0])};
+const kb=n=>n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
+async function pick(f){showErr('');ext='';upd();const n=f.name.toLowerCase();
+ $('#fl').hidden=false;$('#fn').textContent=f.name;$('#fs').textContent=kb(f.size);
+ const bad=m=>{stat('er','Rejected');showErr(m)};
+ if(!/\.(pdf|docx)$/.test(n))return bad('Unsupported file type. Upload a PDF or DOCX, or paste your resume text.');
+ if(f.size===0)return bad('This file is empty. Choose a different file or paste your resume text.');
+ if(f.size>5242880)return bad('This file is '+kb(f.size)+'. The limit is 5 MB. Compress it or paste the text instead.');
+ stat('ld','Reading file...');
+ try{const buf=await f.arrayBuffer(),h=new Uint8Array(buf.slice(0,4)),s=String.fromCharCode(...h);
+  if(n.endsWith('.pdf')){if(!s.startsWith('%PDF'))throw 0;ext=await readPdf(buf)}else{if(!s.startsWith('PK'))throw 0;ext=await readDocx(buf)}
+  if(!ext.trim()){ext='';return bad('No readable text found. The file may be a scanned image. Paste your resume text instead.')}
+  stat('ok','Text extracted: '+(ext.match(/\S+/g)||[]).length+' words')}
+ catch(e){ext='';bad(typeof pdfjsLib=='undefined'?'The file reader could not load. Check your connection and reload.':'This file could not be read. It may be corrupted or password protected. Paste your resume text instead.')}
+ upd()}
+async function readPdf(buf){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+ const d=await pdfjsLib.getDocument({data:buf}).promise;let out='';
+ for(let p=1;p<=d.numPages;p++){const c=await(await d.getPage(p)).getTextContent();let y=null,x=0,l='';
+  for(const it of c.items){const ty=it.transform[5],tx=it.transform[4];if(y!==null&&Math.abs(ty-y)>3){out+=l+'\n';l=''}else if(y!==null&&tx-x>25)l+='    ';l+=it.str;y=ty;x=tx+it.width}out+=l+'\n'}return out}
+async function readDocx(buf){const r=await mammoth.extractRawText({arrayBuffer:buf});const h=await mammoth.convertToHtml({arrayBuffer:buf});tables=(h.value.match(/<table/g)||[]).length;return r.value}
+
+/* ---------- analysis ---------- */
+const SK={'Programming':['python','java','c++','c#','javascript','typescript','php','kotlin','swift','sql','ruby','dart'],'Web':['html','css','react','angular','vue','node.js','nodejs','express','django','flask','bootstrap','tailwind','wordpress','laravel','rest api'],'Databases':['mysql','postgresql','mongodb','oracle','sqlite','firebase','sql server'],'Tools & Cloud':['git','github','docker','aws','azure','linux','jira','postman','figma','excel','power bi','tableau','vs code'],'Data & AI':['machine learning','data analysis','pandas','numpy','tensorflow','deep learning','nlp','scikit-learn'],'Hardware & Networking':['troubleshooting','networking','hardware','ccna','windows','active directory','ram','os installation']};
+const SOFT=['communication','teamwork','leadership','problem solving','time management','adaptability','critical thinking','collaboration','creativity','project management'];
+const H=[['summary',/^((professional|career) )?(summary|profile|objective)$|^about me$/],['education',/^(education|academic (background|qualifications?)|qualifications?)$/],['experience',/^((work|professional|employment|relevant) )?(experience|history)$|^internships?$/],['projects',/^((academic|personal|key) )?projects?$/],['skills',/^((technical|key|core) )?(skills|competencies)$/],['certs',/^(certifications?|certificates|courses|licenses)$/],['extra',/^(achievements|awards|activities|extracurricular|interests|hobbies|languages)$/]];
+const STRONG=/^(built|developed|designed|implemented|created|led|managed|optimi[sz]ed|improved|reduced|increased|launched|automated|analy[sz]ed|deployed|configured|installed|resolved|troubleshot|diagnosed|tested|maintained|coordinated|organi[sz]ed|presented|trained|supported|migrated|integrated|engineered|delivered|achieved|conducted|replaced|repaired|upgraded|documented|collaborated|researched|established|streamlined)\b/i;
+const WEAK=/^(responsible for|worked on|helped|duties included|assisted with|involved in|handled|tasked with)\b/i;
+const TYPO={recieve:'receive',seperate:'separate',experiance:'experience',knowlege:'knowledge',managment:'management',responsibilty:'responsibility',sucess:'success',definately:'definitely',enviroment:'environment',developement:'development',comunication:'communication',adress:'address'};
+const nm=t=>t.length<=4&&!/^(java|node|vue|ruby|dart|rest|git)$/.test(t)?t.toUpperCase():t[0].toUpperCase()+t.slice(1);
+const has=(low,t)=>new RegExp('(?<![a-z0-9+#.])'+t.replace(/[.+*?^${}()|[\]\\]/g,'\\$&')+'(?![a-z0-9+#])').test(low);
+function analyze(raw){
+ const text=raw.replace(/\r/g,'').replace(/\u00a0/g,' '),lines=text.split('\n').map(l=>l.trimEnd()).filter(l=>l.trim()),words=(text.match(/\S+/g)||[]).length,low=text.toLowerCase();
+ if(words<60||text.length<200||(text.match(/\uFFFD/g)||[]).length>10)return{bad:true,words};
+ const S={};let cur=null;
+ for(const l of lines){const k=l.trim().replace(/[:\-–_]+$/,'').trim().toLowerCase();let h=null;if(k.length<36)for(const[n,r]of H)if(r.test(k)){h=n;break}
+  if(h){cur=h;S[h]=S[h]||[]}else if(cur)S[cur].push(l.trim())}
+ const D=[],lose=(cat,n,why,fix)=>n>0&&D.push({cat,n,why,fix});
+ const email=(text.match(/[\w.+-]+@[\w-]+\.[\w.-]+/)||[])[0],phone=(text.match(/(\+?\d[\d\s().-]{8,}\d)/)||[])[0],li=/linkedin\.com/i.test(text),gh=/github\.com/i.test(text);
+ const f0=(lines[0]||'').trim(),name=/^[A-Za-z .'-]+$/.test(f0)&&f0.split(/\s+/).length<=4?f0:'';
+ const odd=(text.match(/[^\x00-\x7F•–—’‘“”·]/g)||[]).length,gaps=lines.filter(l=>/\S {4,}\S/.test(l)).length,pipes=lines.filter(l=>/\|/.test(l)).length;
+ lose('Readability & parsing',odd>20?8:odd>5?4:0,odd+' unusual symbols found','Replace decorative symbols and icons with plain text and standard bullets.');
+ lose('Readability & parsing',gaps>=4?6:0,'Wide gaps on '+gaps+' lines suggest columns or tables','Use a single-column layout; avoid tables and side-by-side columns.');
+ lose('Readability & parsing',tables?6:0,tables+' table(s) detected in the DOCX','Move table content into plain headings and bullet lists.');
+ lose('Readability & parsing',pipes>=3?3:0,'Pipe characters on '+pipes+' lines','Separate items with commas or line breaks instead of | characters.');
+ lose('Readability & parsing',words<150?5:words>1000?4:0,words<150?'Very short ('+words+' words)':'Very long ('+words+' words)',words<150?'Add detail on projects, skills and responsibilities.':'Trim to the most relevant 1 to 2 pages.');
+ const sec=k=>S[k]&&S[k].length;
+ lose('Structure & sections',sec('experience')||sec('projects')?0:6,'No Experience or Projects section found','Add a heading titled Experience, Internships or Projects.');
+ lose('Structure & sections',sec('education')?0:5,'No Education section found','Add a heading titled Education with degree, college and years.');
+ lose('Structure & sections',sec('skills')?0:5,'No Skills section found','Add a heading titled Skills listing tools and technologies you actually use.');
+ lose('Structure & sections',sec('summary')?0:2,'No Summary section found','Add a 2 to 3 line Summary at the top (see the suggestion below).');
+ lose('Structure & sections',sec('certs')||sec('extra')?0:2,'No Certifications, Achievements or similar section','If you have certifications or awards, give them their own heading. Skip if you have none.');
+ lose('Contact & essentials',email?0:4,'No email address found','Add a professional email address near the top.');
+ lose('Contact & essentials',phone?0:3,'No phone number found','Add a phone number near the top.');
+ lose('Contact & essentials',li||gh?0:2,'No LinkedIn or GitHub link found','Add a profile link if you have one.');
+ lose('Contact & essentials',name?0:1,'Name not clearly detected on the first line','Put your full name alone on the first line.');
+ const found={};let tech=0;for(const[c,a]of Object.entries(SK)){const f=a.filter(t=>has(low,t));if(f.length){found[c]=f.map(nm);tech+=f.length}}
+ const soft=SOFT.filter(t=>has(low,t)).map(nm),cats=Object.keys(found).length;
+ lose('Skills presentation',Math.min(10,Math.max(0,10-tech)),tech+' technical skills explicitly mentioned','List more skills you genuinely have, such as tools, languages and platforms.');
+ lose('Skills presentation',cats>=3?0:3-cats,'Skills fall in '+cats+' recognised categories','Group skills by type, for example Languages, Tools, Databases.');
+ lose('Skills presentation',sec('skills')?0:2,'Skills are not in a dedicated section','Create a Skills section so parsers can read them as a list.');
+ const pool=[...(S.experience||[]),...(S.projects||[])].map(l=>l.replace(/^[•●▪■◦►➢*-]+\s*/,'')).filter(l=>l.split(/\s+/).length>=5),b=pool.length;
+ const sv=pool.filter(l=>STRONG.test(l)),wk=pool.filter(l=>WEAK.test(l)),mt=pool.filter(l=>/\d+%|\d{2,}|\$|₹|\b\d+\+/.test(l));
+ if(!b)lose('Experience & achievements',20,'No bullet-style experience or project descriptions detected','Describe what you did under each role or project in 2 to 5 bullets.');
+ else{lose('Experience & achievements',b<4?8:b<8?4:0,'Only '+b+' descriptive lines found','Add more detail on what you did in each role or project.');
+  lose('Experience & achievements',Math.round((1-sv.length/b)*5),sv.length+' of '+b+' lines start with a strong action verb','Start bullets with verbs such as Built, Configured, Resolved or Tested.');
+  lose('Experience & achievements',Math.min(4,wk.length),wk.length+' weak or vague openings','Replace phrases like "Worked on" with the specific action you took.');
+  lose('Experience & achievements',!mt.length?5:mt.length/b<.2?2:0,mt.length+' of '+b+' lines include a number','Where true, add real numbers such as users, systems, time saved or team size.')}
+ const mon=/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{4}/gi,num=/\b\d{1,2}[\/-]\d{4}\b/g,yr=/\b(19|20)\d{2}\b/g;
+ const dm=(text.match(mon)||[]).length,dn=(text.match(num)||[]).length,dy=(text.match(yr)||[]).length;
+ lose('Consistency & clarity',dm&&dn?3:0,'Dates use mixed formats','Pick one format, for example Jun 2024, and use it everywhere.');
+ lose('Consistency & clarity',dy||dm||dn?0:3,'No dates detected','Add dates for education, jobs and projects.');
+ const ty=Object.keys(TYPO).filter(w=>has(low,w)),rep=[...text.matchAll(/\b([A-Za-z]{3,})\s+\1\b/gi)].map(m=>m[0]),li2=(text.match(/(^|\s)i(\s|$)/gm)||[]).length;
+ lose('Consistency & clarity',Math.min(3,ty.length),'Likely misspellings: '+ty.map(w=>w+' (should be '+TYPO[w]+')').join(', '),'Fix the spelling and run a full spell check.');
+ lose('Consistency & clarity',Math.min(2,rep.length),'Repeated words: '+rep.slice(0,3).join(', '),'Remove the duplicated word.');
+ lose('Consistency & clarity',li2?1:0,'Lowercase "i" used as a word','Capitalise "I" or avoid first-person pronouns.');
+ const MAX={'Readability & parsing':25,'Structure & sections':20,'Contact & essentials':10,'Skills presentation':15,'Experience & achievements':20,'Consistency & clarity':10},cat={};let total=0;
+ for(const c in MAX){const l=Math.min(MAX[c],D.filter(d=>d.cat==c).reduce((a,d)=>a+d.n,0));cat[c]={s:MAX[c]-l,max:MAX[c]};total+=MAX[c]-l}
+ const flat=Object.values(found).flat(),deg=(text.match(/\b(bca|mca|b\.?tech|m\.?tech|b\.?sc|m\.?sc|bba|mba|diploma[^,\n]{0,25}|bachelor[^,\n]{0,35}|master[^,\n]{0,35})/i)||[])[0];
+ let sum='';if(flat.length>=2){const sk=flat.slice(0,5);sum='Candidate'+(deg?' with a '+deg.trim()+' background':'')+' with listed skills in '+sk.slice(0,-1).join(', ')+' and '+sk.slice(-1)+'.'+(sec('projects')?' Has documented project work in the resume.':'')+(sec('experience')?' Includes the experience listed in the resume.':'')+(sec('certs')?' Holds the certifications listed.':'')}
+ const weakEx=wk.slice(0,3).map(l=>({o:l,n:'Replace the opening phrase with the action you actually took (e.g. Built, Tested, Configured), then keep: "'+l.replace(WEAK,'').trim()+'"'}));
+ const q=[];if(!mt.length)q.push('Do you know any real numbers for your projects or work (users, devices, time saved, team size)?');if(!sec('summary'))q.push('What role or field are you aiming for? Add it to your summary yourself.');if(!sec('projects')&&!sec('experience'))q.push('Do you have internships, projects or practical work to list?');
+ return{words,total,cat,D:D.sort((a,b)=>b.n-a.n),email,phone,li,gh,name,S,found,soft,sum,weakEx,q,ts:new Date().toLocaleString(),tables,odd}}
+
+/* ---------- render ---------- */
+const L=(a,n)=>(a||[]).slice(0,n);
+const ul=a=>a&&a.length?'<ul>'+a.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<p class="note">Not detected in the resume.</p>';
+function render(r){const s=$('#res');R=r;
+ if(r.bad){s.innerHTML='<div class="card"><h2>We could not read enough text to score this.</h2><p>Only '+r.words+' words were found. Scoring a document that cannot be parsed reliably would be misleading. Re-export your resume as a text-based PDF or DOCX, or paste the resume text.</p><button class="btn" id="nw">Try again</button></div>';s.hidden=false;$('#up').hidden=true;$('#nw').onclick=reset;return}
+ const C=2*Math.PI*88,tone=r.total>=80?'Strong':r.total>=60?'Fair':'Needs work';
+ s.innerHTML='<h1 style="margin-top:8px">Your ATS report</h1><div class="card hero"><div class="ring"><svg width="200" height="200"><circle cx="100" cy="100" r="88" fill="none" stroke="#1f1f25" stroke-width="12"/><circle cx="100" cy="100" r="88" fill="none" stroke="#d8b26a" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+C*(1-r.total/100)+'"/></svg><div><b>'+r.total+'</b><span class="note">out of 100 · '+tone+'</span></div></div><div>'+Object.entries(r.cat).map(([k,v])=>'<div class="bar"><p><span>'+k+'</span><span>'+v.s+'/'+v.max+'</span></p><i><u style="width:'+v.s/v.max*100+'%"></u></i></div>').join('')+'<p class="note">Estimate from '+r.words+' words analyzed on '+esc(r.ts)+'. It does not guarantee passing every employer\'s ATS.</p></div></div>'
+ +'<div class="card"><h2>Fix these first</h2>'+(r.D.length?L(r.D,6).map(d=>'<div class="pf"><b>'+esc(d.why)+' (-'+d.n+' pts, '+d.cat+')</b><span>'+esc(d.fix)+'</span></div>').join(''):'<p>No deductions found.</p>')+'</div>'
+ +'<div class="card"><h2>Improved summary</h2>'+(r.sum?'<p class="lbl">SUGGESTION, BUILT ONLY FROM YOUR RESUME</p><div class="sum" id="sm">'+esc(r.sum)+'</div><p class="note">Add your target role and any years of experience yourself.</p><button class="btn s" id="cs">Copy summary</button>':'<p>Not enough listed skills to build a summary. Add a Skills section first.</p>')
+ +(R.S.summary&&R.S.summary.length?'<p class="lbl mt">YOUR ORIGINAL SUMMARY</p><p>'+esc(R.S.summary.join(' '))+'</p>':'')+'</div>'
+ +'<div class="g2"><div class="card"><h2>Skills found</h2>'+(Object.keys(r.found).length?Object.entries(r.found).map(([k,v])=>'<p class="note" style="margin:10px 0 6px">'+k+'</p><div class="chips">'+v.map(x=>'<span class="chip">'+esc(x)+'</span>').join('')+'</div>').join(''):'<p class="note">No known technical skills detected.</p>')+'<p class="note" style="margin:14px 0 6px">Soft skills</p><div class="chips">'+(r.soft.length?r.soft.map(x=>'<span class="chip">'+esc(x)+'</span>').join(''):'<span class="note">None named explicitly.</span>')+'</div><p class="note mt">Only skills written in your resume are listed.</p></div>'
+ +'<div class="card"><h2>Resume overview</h2><p><b>Name:</b> '+esc(r.name||'Not clear')+'<br><b>Email:</b> '+esc(r.email||'Missing')+'<br><b>Phone:</b> '+esc(r.phone||'Missing')+'<br><b>LinkedIn / GitHub:</b> '+(r.li?'LinkedIn ':'')+(r.gh?'GitHub':'')+(r.li||r.gh?'':'Missing')+'</p><b>Education</b>'+ul(L(r.S.education,3))+'<b>Experience</b>'+ul(L(r.S.experience,4))+'<b>Projects</b>'+ul(L(r.S.projects,4))+'<b>Certifications</b>'+ul(L(r.S.certs,3))+'</div></div>'
+ +'<div class="g2 mt"><div class="card"><h2>Formatting check</h2>'+ul(r.D.filter(d=>d.cat=='Readability & parsing'||d.cat=='Structure & sections').map(d=>d.why).concat(r.D.some(d=>d.cat=='Readability & parsing')?[]:['No table, column or symbol problems detected in the extracted text.']))+'<p class="note">Text-based checks only. Text boxes and images cannot be seen reliably.</p></div>'
+ +'<div class="card"><h2>Content review</h2>'+ul(r.D.filter(d=>/Experience|Consistency/.test(d.cat)).map(d=>d.why))+(r.weakEx.length?'<b>Weak bullets</b>'+r.weakEx.map(w=>'<div class="pf"><b>'+esc(w.o)+'</b><span>'+esc(w.n)+'</span></div>').join(''):'')+(r.q.length?'<b>Questions for you</b>'+ul(r.q):'')+'</div></div>'
+ +'<div class="card mt"><div class="row"><button class="btn" id="pdf">Download PDF</button><button class="btn s" id="cr">Copy report</button><button class="btn s" id="nw">Start new analysis</button><button class="btn s" id="ud">Upload different resume</button></div><p class="note" id="msg" role="status"></p></div>';
+ s.hidden=false;$('#up').hidden=true;scrollTo(0,0);
+ const cp=async(t,m)=>{try{await navigator.clipboard.writeText(t);$('#msg').textContent=m}catch(e){$('#msg').textContent='Copy was blocked by the browser. Select the text and copy it manually.'}};
+ $('#cr').onclick=()=>cp(rtext(),'Report copied.');if($('#cs'))$('#cs').onclick=()=>cp(R.sum,'Summary copied.');
+ $('#nw').onclick=reset;$('#ud').onclick=()=>{reset();setMode(1);$('#fi').click()};$('#pdf').onclick=dl}
+function rtext(){const r=R,o=['AI RESUME ATS ANALYZER REPORT','Generated: '+r.ts,'','ATS SCORE: '+r.total+'/100 (estimate, not a guarantee for any employer ATS)',''];
+ for(const[k,v]of Object.entries(r.cat))o.push(k+': '+v.s+'/'+v.max);
+ o.push('','PRIORITY FIXES');r.D.slice(0,8).forEach((d,i)=>o.push((i+1)+'. '+d.why+' (-'+d.n+', '+d.cat+') Fix: '+d.fix));
+ o.push('','SKILLS FOUND (explicit in resume)');for(const[k,v]of Object.entries(r.found))o.push(k+': '+v.join(', '));o.push('Soft skills: '+(r.soft.join(', ')||'none named'));
+ o.push('','CONTACT','Email: '+(r.email||'missing'),'Phone: '+(r.phone||'missing'),'','SUGGESTED SUMMARY (suggestion, not original text)',r.sum||'Not enough information.');
+ if(r.q.length)o.push('','QUESTIONS',...r.q);return o.join('\n')}
+function dl(){try{const d=new jspdf.jsPDF(),t=rtext().replace(/[^\x20-\x7E\n]/g,'');let y=20;d.setFont('helvetica','bold');d.setFontSize(16);d.text('AI Resume ATS Analyzer',15,y);y+=10;d.setFont('helvetica','normal');d.setFontSize(10);
+ for(const l of d.splitTextToSize(t,180)){if(y>280){d.addPage();y=20}d.text(l,15,y);y+=5.5}d.save('ats-report.pdf')}catch(e){$('#msg').textContent='PDF could not be created. Use Copy report instead.'}}
+function reset(){$('#res').hidden=true;$('#up').hidden=false;$('#ta').value='';clearFile();showErr('');R=null;scrollTo(0,0)}
+$('#go').onclick=()=>{showErr('');const t=mode==1?ext:$('#ta').value;if(!t.trim())return showErr('Add a resume first.');busy=true;upd();$('#ld').textContent='Analyzing...';
+ setTimeout(()=>{try{render(analyze(t))}catch(e){showErr('Analysis failed unexpectedly. Try pasting the text instead.')}busy=false;$('#ld').textContent='';upd()},350)};
+</script></body></html>
